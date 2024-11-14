@@ -30,7 +30,7 @@ Apply the configuration
 to destroy the create resources use terraform destroy
 
 Test the Configuration
-- to test the configuration we need bastin host on public subnet
+- to test the configuration we need bastion host on public subnet
 - aws eks --region ap-south-1 update-kubeconfig --name private-eks-cluster
 - kubectl get nodes
 
