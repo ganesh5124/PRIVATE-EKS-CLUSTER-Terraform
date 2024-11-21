@@ -1,4 +1,3 @@
-
 # Create the EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
@@ -11,9 +10,13 @@ resource "aws_eks_cluster" "eks_cluster" {
     subnet_ids              = aws_subnet.private_subnets[*].id
     security_group_ids      = [aws_security_group.eks_cluster_sg.id]
     endpoint_private_access = true
-    endpoint_public_access = false
+    endpoint_public_access  = false
   }
 
+  access_config {
+    authentication_mode                         = "CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
   enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
   tags = {
     Name        = var.cluster_name
@@ -21,10 +24,16 @@ resource "aws_eks_cluster" "eks_cluster" {
   }
 }
 
-resource "aws_eks_addon" "eks_addon1" {
-  for_each     = toset(var.addons)
-  cluster_name = aws_eks_cluster.eks_cluster.name
-  addon_name   = each.key
+# AddOns for EKS Cluster
+resource "aws_eks_addon" "eks-addons" {
+  for_each      = { for idx, addon in var.addons : idx => addon }
+  cluster_name  = aws_eks_cluster.eks_cluster.name
+  addon_name    = each.value.name
+  addon_version = each.value.version
+
+  depends_on = [
+    aws_eks_node_group.eks_node_group
+  ]
 }
 
 
