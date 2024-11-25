@@ -1,3 +1,4 @@
+reagion              = "ap-south-1"
 cluster_name         = "my-private-eks-cluster"
 vpc_cidr             = "13.0.0.0/16"
 public_subnet_cidrs  = "13.0.1.0/24"

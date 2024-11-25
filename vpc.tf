@@ -148,3 +148,5 @@ resource "aws_security_group" "eks_cluster_sg" {
     Name = "${var.cluster_name}-eks-cluster-sg"
   }
 }
+
+

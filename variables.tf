@@ -1,3 +1,5 @@
+variable "reagion" {}
+
 variable "cluster_name" {}
 
 variable "vpc_cidr" {}

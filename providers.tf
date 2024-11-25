@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = "ap-south-1"
+  region  = var.reagion
   alias   = "ap-south"
   profile = "default"
 }
