@@ -7,8 +7,8 @@ resource "aws_eks_cluster" "eks_cluster" {
     support_type = "STANDARD"
   }
   vpc_config {
-    subnet_ids              = aws_subnet.private_subnets[*].id
-    security_group_ids      = [aws_security_group.eks_cluster_sg.id]
+    subnet_ids              = var.subnet_ids
+    security_group_ids      = [var.security_group_id]
     endpoint_private_access = true
     endpoint_public_access  = false
   }
@@ -42,7 +42,7 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_group_name = "${var.cluster_name}-eks-node-group"
   node_role_arn   = aws_iam_role.eks_node_role.arn
   cluster_name    = aws_eks_cluster.eks_cluster.name
-  subnet_ids      = aws_subnet.private_subnets[*].id
+  subnet_ids      = var.subnet_ids
   instance_types  = [var.instance_type]
   scaling_config {
     desired_size = 2

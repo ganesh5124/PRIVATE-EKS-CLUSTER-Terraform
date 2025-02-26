@@ -1,3 +1,7 @@
-output "endpoint" {
-  value = aws_eks_cluster.eks_cluster.endpoint
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+}
+
+output "cluster_name" {
+  value = module.eks.eks_cluster_name
 }
