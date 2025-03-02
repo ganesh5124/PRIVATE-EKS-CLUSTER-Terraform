@@ -16,7 +16,7 @@ resource "aws_subnet" "public_subnet" {
   availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.cluster_name}-public-subnet"
+    Name = "${var.cluster_name}-public-subnet-${count.index + 1}"
   }
 }
 
