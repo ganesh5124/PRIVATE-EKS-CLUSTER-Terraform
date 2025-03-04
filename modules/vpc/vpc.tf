@@ -5,6 +5,8 @@ resource "aws_vpc" "eks_vpc" {
   enable_dns_hostnames = true
   tags = {
     Name = "${var.cluster_name}-vpc"
+    "kubernetes.io/cluster/${var.cluster_name}"    = "shared"
+    "kubernetes.io/role/elb"              = "1"
   }
 }
 
@@ -17,6 +19,8 @@ resource "aws_subnet" "public_subnet" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.cluster_name}-public-subnet-${count.index + 1}"
+    "kubernetes.io/cluster/${var.cluster_name}"    = "shared"
+    "kubernetes.io/role/elb"              = "1"
   }
 }
 
@@ -28,6 +32,8 @@ resource "aws_subnet" "private_subnets" {
   availability_zone       = element(var.availability_zones, count.index)
   tags = {
     Name = "${var.cluster_name}-private-subnet-${count.index + 1}"
+    "kubernetes.io/cluster/${var.cluster_name}"    = "shared"
+    "kubernetes.io/role/elb"              = "1"
   }
 }
 
@@ -44,7 +50,7 @@ resource "aws_internet_gateway" "igw" {
 
 # Create Elastic IP for NAT Gateway
 resource "aws_eip" "nat_eip" {
-  count = length(var.private_subnet_cidrs)
+  count = length(var.public_subnet_cidrs)
   domain = "vpc"
   tags = {
     Name = "${var.cluster_name}-nat-eip-${count.index + 1}"
@@ -53,7 +59,7 @@ resource "aws_eip" "nat_eip" {
 
 # Create NAT Gateway
 resource "aws_nat_gateway" "nat_gateway" {
-  count         = length(var.private_subnet_cidrs)
+  count         = length(var.public_subnet_cidrs)
   allocation_id = aws_eip.nat_eip[count.index].id
   subnet_id     = element(aws_subnet.public_subnet[*].id, count.index)
   tags = {
